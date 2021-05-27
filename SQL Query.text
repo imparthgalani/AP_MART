@@ -1,0 +1,220 @@
+Join Query
+
+		SELECT shop_product.mrp, shop.name, product.name ,category.name FROM shop_product 
+		JOIN shop ON shop.shop_id = shop_product.shop_id 
+		JOIN product ON product.product_id = shop_product.product_id 
+		JOIN category ON category.category_id = product.category_id 
+		where category.category_id=1;
+
+
+Find Discount Query With Desendind order and top 10
+
+		SELECT shop_product_id, ROUND(100-discount_mrp/mrp*100) FROM shop_product ORDER BY ROUND(100-discount_mrp/mrp*100)DESC LIMIT 10
+
+
+Get Current Time Query
+
+		SELECT TIME_FORMAT(NOW(), "%H:%i")
+
+
+String Split Query
+
+	Function :-
+
+		DELIMITER $$
+
+		CREATE FUNCTION SPLIT_STR(
+		  x VARCHAR(255),
+		  delim VARCHAR(12),
+		  pos INT
+		)
+		RETURNS VARCHAR(255) DETERMINISTIC
+		BEGIN 
+		    RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(x, delim, pos),
+		       LENGTH(SUBSTRING_INDEX(x, delim, pos -1)) + 1),
+		       delim, '');
+		END$$
+
+		DELIMITER ;
+
+	Query :-
+
+		SELECT SPLIT_STR(membername, ' ', 1) as memberfirst,
+       	SPLIT_STR(membername, ' ', 2) as memberlast
+		FROM   users;
+
+Current Time is bettwen two times
+
+		select * from shop where CAST( TIME_FORMAT(NOW(), "%H:%i") as time) between opening_time and closing_time
+
+
+<div id="category_model" class="header-cate-model main-gambo-model modal fade" tabindex="-1" role="dialog" aria-modal="false">
+        <div class="modal-dialog category-area"  role="document">
+            <div class="category-area-inner">
+                <div class="cate-header modal-header">
+                    <h4 style="padding-top:1rem">Select Shop</h4>
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                        <i class="uil uil-multiply"></i>
+                    </button>
+                </div>
+                <div class="category-model-content modal-content">
+
+                    <ul class="category-by-cat">
+                        <%
+                            String image = null;
+                            List<Shop> list8;
+                            list8 = ShopDAO.viewDataRandom();
+
+                            String status;
+                            for (Shop e : list8) { 
+                                image = "default.svg";
+                                if (e.getImage() != null) {
+                                    image = e.getImage();
+                                }
+                                status = ShopStatus.isOpen(e.getOpening_time(), e.getClosing_time());
+                        %>
+                        <li>
+                            <div class="single-cat-item " style="cursor: pointer;" onclick="<%if (status == "Open") {%>location.href = 'shop_grid.jsp?shop_id=<%=e.getShop_id()%>&shop_name=<%=URLEncoder.encode(e.getName(), "UTF-8")%>'<%}%>">
+                                <div class="icon">
+                                    <p class="s-status" style="<%if (status == "Closed") {%>background-color:red;z-index:1;<%}%>" >     
+                                        <%=status%>
+                                    </p>
+                                    <img src="images/shop/<%=image%>" style="<%if (status == "Closed") {%>filter: grayscale(100%);<%}%>" class="img-responsive" alt="">
+                                </div>
+                                <div class="text"><%=e.getName()%></div>
+                            </div>    
+                        </li>
+                        <%}%>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    INSERT INTO order_detail (order_id,shop_id,user_id,shop_product_id,quantity)
+SELECT "1",shop_product.shop_id, cart.user_id,cart.shop_product_id,cart.quantity FROM cart
+JOIN shop_product ON shop_product.shop_product_id = cart.shop_product_id
+
+DELIMITER $$
+CREATE PROCEDURE my_proc()
+BEGIN
+  DECLARE shopdomain VARCHAR(30);
+  SET shopdomain = 'newdomain.com';
+  UPDATE trans SET tval = REPLACE(name,'olddomain.de', shopdomain ) WHERE name LIKE 'olddomain.de';
+  UPDATE settings SET tval=REPLACE(name,'olddomain.de', shopdomain ) WHERE name LIKE 'olddomain.de';
+  UPDATE ...
+END$$
+DELIMITER ;
+
+
+SELECT shop_id FROM `order_detail` WHERE order_id = 1 group by shop_id having count(*) >= 1;
+
+
+SELECT product.name,shop_product.mrp,shop_product.discount_mrp,order_detail.quantity FROM `order_list` JOIN order_detail ON order_detail.order_id = order_list.order_id JOIN shop_product ON shop_product.shop_product_id = order_detail.shop_product_id join product ON product.product_id = shop_product.product_id WHERE order_detail.order_id = 2 group by order_detail.shop_product_id having count(*) >= 1
+
+SELECT shop_id FROM order_list WHERE order_id = 1
+
+SELECT order_list.order_id,order_list.shop_id,delivery_detail.custmore_name,delivery_detail.phone,delivery_detail.alt_phone,delivery_detail.delivery_time,delivery_detail.paymentmethod,delivery_address.title,delivery_address.flat,delivery_address.street,delivery_address.pincode,delivery_address.locality FROM order_list JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id JOIN delivery_address ON delivery_address.delivery_address_id = delivery_detail.delivery_address_id WHERE order_list.order_id = 1 group by order_list.order_id having count(*) >= 1
+
+SELECT DATE_ADD('1999-12-31 22:00:00', INTERVAL 1 HOUR) result
+
+SELECT DATE_FORMAT(DATE_ADD('1999-12-7 22:00:00', INTERVAL 1 HOUR) , '%h:%i %p - %D %M %Y')
+
+SELECT order_list.order_id,order_list.shop_id,delivery_detail.custmore_name,delivery_detail.phone,delivery_detail.alt_phone,DATE_FORMAT(DATE_ADD(order_list.current_time, INTERVAL 1 HOUR) , '%h:%i %p - %D %M %Y') As order_time,delivery_detail.delivery_time,delivery_detail.paymentmethod,delivery_address.title,delivery_address.flat,delivery_address.street,delivery_address.pincode,delivery_address.locality FROM order_list JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id JOIN delivery_address ON delivery_address.delivery_address_id = delivery_detail.delivery_address_id WHERE order_list.order_id = 1 group by order_list.order_id having count(*) >= 1
+
+SELECT order_list.order_id,order_list.shop_id,delivery_detail.custmore_name,delivery_detail.phone,delivery_detail.alt_phone,DATE_FORMAT(DATE_ADD(order_list.current_time, INTERVAL delivery_detail.delivery_time HOUR) , '%h:%i %p - %D %M %Y') As order_time,delivery_detail.delivery_time,delivery_detail.paymentmethod,delivery_address.title,delivery_address.flat,delivery_address.street,delivery_address.pincode,delivery_address.locality FROM order_list JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id JOIN delivery_address ON delivery_address.delivery_address_id = delivery_detail.delivery_address_id WHERE order_list.order_id = 1 group by order_list.order_id having count(*) >= 1
+
+SELECT order_list.order_id,order_list.shop_id,delivery_detail.custmore_name,delivery_detail.phone,delivery_detail.alt_phone,DATE_FORMAT(DATE_ADD(order_list.current_time, INTERVAL delivery_detail.delivery_time HOUR) , '%h:%i %p - %D %M %Y') As order_time,delivery_detail.delivery_time,delivery_detail.paymentmethod,delivery_address.title,CONCAT('#',delivery_address.flat,' ',delivery_address.street,' ',delivery_address.pincode,' ',delivery_address.locality) AS order_address FROM order_list JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id JOIN delivery_address ON delivery_address.delivery_address_id = delivery_detail.delivery_address_id WHERE order_list.order_id = 1 group by order_list.order_id having count(*) >= 1
+
+SELECT order_id FROM `order_list` WHERE user_id =22 AND status != 4 group by order_id having count(*) >= 1
+
+group by order_detail.shop_id having count(*) >= 1
+
+
+JOIN wishlist ON wishlist.shop_product_id = shop_product.shop_product_id WHERE wishlist.user_id = 22
+
+
+Time ad
+
+SELECT order_list.order_id,order_list.shop_id,delivery_detail.custmore_name,delivery_detail.phone,delivery_detail.alt_phone,DATE_FORMAT(DATE_ADD(order_list.current_time, INTERVAL delivery_detail.delivery_time HOUR) , '%h:%i %p - %D %M %Y') As order_time,delivery_detail.delivery_time,delivery_detail.paymentmethod,delivery_address.title,CONCAT('#',delivery_address.flat,' ',delivery_address.street,' ',delivery_address.pincode,' ',delivery_address.locality) AS order_address FROM order_list JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id JOIN delivery_address ON delivery_address.delivery_address_id = delivery_detail.delivery_address_id WHERE order_list.order_id = ? group by order_list.order_id having count(*) >= 1
+
+
+
+
+
+
+
+
+Next use
+
+
+
+DELETE order_list,order_detail,delivery_detail FROM  order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id
+WHERE order_list.order_list_id = 912
+
+SELECT order_id,COUNT(order_id) FROM order_list GROUP BY order_id HAVING COUNT(order_id) > 1
+
+DELETE order_list,order_detail,delivery_detail FROM  order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id JOIN delivery_detail ON delivery_detail.delivery_detail_id = (SELECT delivery_detail_id FROM order_list GROUP BY order_id HAVING COUNT(order_id) = 1)
+WHERE order_list.order_list_id = 815 
+
+DELETE FROM emailNotification
+WHERE notificationId IN (
+ SELECT notificationId FROM emailNotification e
+ LEFT JOIN jobs j ON j.jobId = e.jobId
+WHERE j.active = 1
+)
+
+
+SET @count = (SELECT COUNT(order_id) FROM order_list GROUP BY order_id HAVING COUNT(order_id) > 1);
+SELECT @count;
+
+
+SELECT order_id,COUNT(order_id) FROM order_list where order_id = (SELECT order_id FROM order_list WHERE order_list_id = 611 ) GROUP BY order_id HAVING COUNT(order_id) = 1
+
+
+ public static void deleteOrderList(int order_list_id,int order_quantity) throws SQLException
+    {
+        Connection con = getConnection();
+        
+        try {
+             String sql;
+             System.out.println("DAO "+ order_quantity);
+            if(order_quantity == 1)
+            {
+                sql = "DELETE order_list,order_detail,delivery_detail FROM  order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id JOIN delivery_detail ON delivery_detail.delivery_detail_id = order_list.delivery_detail_id WHERE order_list.order_list_id = ?";
+            }
+            else
+            {
+                sql = "DELETE order_list,order_detail FROM  order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id WHERE order_list.order_list_id = ?";
+            }
+            java.sql.PreparedStatement st = con.prepareStatement(sql);
+            st.setInt(1,order_list_id);  
+              
+            st.executeUpdate();
+            
+            con.close();  
+        }
+        catch (SQLException sqle) {
+            System.err.println("Error with connection:" + sqle);
+        }
+        finally
+        {
+             con.close();
+        }
+    }
+
+
+    SELECT product.name,shop_product.mrp,shop_product.discount_mrp,ROUND(100-shop_product.discount_mrp/shop_product.mrp*100),order_detail.quantity FROM `order_list` INNER JOIN cancel_order ON cancel_order.order_list_id = order_list.order_list_id JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id AND order_detail.shop_product_id != cancel_order.shop_product_id JOIN shop_product ON shop_product.shop_product_id = order_detail.shop_product_id join product ON product.product_id = shop_product.product_id WHERE order_list.order_list_id = 213
+
+
+    SELECT(SELECT COUNT(order_detail.order_detail_id) FROM order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id WHERE order_list.order_list_id = 213 EXCEPT SELECT COUNT(cancel_order.order_list_id) FROM order_list JOIN cancel_order ON cancel_order.order_list_id = order_list.order_list_id WHERE order_list.order_list_id = 213) AS is_math
+
+    SELECT(SELECT COUNT(order_detail.order_detail_id) FROM order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id WHERE order_list.order_list_id = 213) - (SELECT COUNT(cancel_order.order_list_id) FROM order_list JOIN cancel_order ON cancel_order.order_list_id = order_list.order_list_id WHERE order_list.order_list_id = 213) AS is_math
+
+    UPDATE `order_list` SET status = 6 WHERE (SELECT(SELECT COUNT(order_detail.order_detail_id) FROM order_list JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id WHERE order_list.order_list_id = ?) - (SELECT COUNT(cancel_order.order_list_id) FROM order_list JOIN cancel_order ON cancel_order.order_list_id = order_list.order_list_id WHERE order_list.order_list_id = ?) AS is_math) = 0 AND order_list_id = ?
+
+    SELECT product.name,shop_product.mrp,shop_product.discount_mrp,ROUND(100-shop_product.discount_mrp/shop_product.mrp*100),order_detail.quantity,shop_product.shop_product_id FROM `order_list` JOIN order_detail ON order_detail.order_id = order_list.order_id AND order_detail.shop_id = order_list.shop_id LEFT JOIN cancel_order ON cancel_order.shop_product_id = order_detail.shop_product_id JOIN shop_product ON shop_product.shop_product_id = order_detail.shop_product_id join product ON product.product_id = shop_product.product_id WHERE  cancel_order.shop_product_id IS null AND  order_list.order_list_id = 311
+
+
+    UPDATE shop_product JOIN cart ON cart.shop_product_id = shop_product.shop_product_id SET shop_product.quantity = shop_product.quantity - cart.quantity WHERE cart.user_id = ?

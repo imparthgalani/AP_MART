@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Telivigala&display=swap');
+
+.M-Select{
+    margin-left: 58px;
+}
+.Edit{
+    padding-top:2em;
+}
+.opp{
+    margin-top: 2em;
+}
+.Edit_Profile{
+    padding: 2em;
+}
+.button_color {
+    background-color: #2b2f4c !important;
+    color:white;
+}
+.button_color:hover{
+    background-color: #2b2f4c !important;
+    color:white !important;
+}
+.modal-dialog{
+    max-width:  1000px !important;        
+    max-height: 100% !important;
+    margin: 1.75rem auto !important;
+}
+
+.single-cat-item {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 20px 10px;
+    display: block;
+    height: fit-content;
+    width: auto;
+}
+
+.single-cat-item .icon {
+    position: relative; 
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+    height: 190px;
+    margin-bottom: 15px;
+}
+.s-status {
+    position: absolute;
+    top: 10%;
+    left: 60%;
+    background: rgb(97, 201, 97);
+    color: white;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+    width: 50%;
+    height: 25px;
+    padding-left: 1.2rem;
+    line-height: 25px;
+    transform: rotate(40deg);
+}
+.modal.show .modal-dialog {
+    margin-top: 5rem !important;
+    margin-bottom: 5rem !important; 
+}
+
+.category-model-content
+{
+    overflow-y:scroll;
+    overflow-x: hidden;
+    height:535px;
+}
+
+#collapse1{
+    overflow-y:scroll;
+    max-height:320px;               
+}
+.category-area1{
+    max-width: 500px !important;
+    max-height: 100% !important;
+    margin: 1.75rem auto !important;
+}
+
+.category-area2{
+    max-width: 700px !important;
+    max-height: 100% !important;
+    margin: 1.75rem auto !important;
+}
+
+.morecate-btn1 {
+    display: inline !important;
+    text-align: center;
+    width: 100%;
+    border-top: 1px solid #efefef;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    font-weight: 500;
+    color: #2b2f4c;
+}
+.category-model-content1
+{
+    height:100% auto !important;
+}
+/*.category-model-content-profile
+{
+    width:500px !important;
+}*/
+
+h4:first-child, h5:first-child {
+    margin-top: 0.5rem;
+}
+.category-by-cat{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.single-cat-item .text{
+    font-size: 20px;
+    font-family: cursive;
+}
+.single-cat-item .icon img{
+    width: 100%;
+    height:100%;
+    border-radius: 10px;
+}
+/*@media only screen and (max-width: 700px) {
+    .s-status{
+        width: 60%;
+        padding-left: 0rem;
+        letter-spacing: 1px;
+    }
+}*
+/*@media only screen and (max-width: 420px) {
+    .modal.show .modal-dialog {
+        margin-top: 30px !important;         
+    }
+    .category-by-cat {
+        flex-direction: column;
+    }
+    .single-cat-item{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 360px;
+    }
+    .s-status{
+        display: none;
+    }
+    .single-cat-item .icon img{
+        width: 250px;
+    }
+}*/
+
+/* ===== Validation Error Code ===== */
+
+.error{
+    font-size: 13px;
+    color:red;
+    font-family: 'Akaya Telivigala', cursive;
+    letter-spacing: 2px;
+}
+
+
+
+/* error msg in form*/

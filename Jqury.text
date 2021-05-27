@@ -1,0 +1,739 @@
+onclick="update(this)"
+
+function update(e)
+{
+    var qty = $(e).parent().find(".qty").val();
+    var price = $(e).parent().parent().parent().find(".product-price").children("font").text();
+    var weight = $(e).parent().parent().parent().find(".product-price").find("#weight").text();
+    var unit = $(e).parent().parent().parent().find(".product-price").find("#unit").text();
+    
+    var total_price = (parseInt(qty)+1) * parseInt(price);
+    var total_weight = (parseInt(qty)+1) * parseInt(weight);
+    
+    //alert(total_price +" "+total_weight);
+    
+    if(unit == "gm" || unit == "ml")
+    {
+        if(parseInt(total_weight) > 1000)
+        {
+            total_weight = parseInt(total_weight)/1000;
+            //alert(total_weight);
+            if(unit == 'gm')
+            {
+                unit = 'kg'
+            }
+            else
+            {
+                unit = 'liters'
+            }
+        }
+    }
+    $(e).parent().parent().parent().find(".product-price").children("font").text(total_price);
+    $(e).parent().parent().parent().find(".product-price").find("#weight").text(total_weight);
+    $(e).parent().parent().parent().find(".product-price").find("#unit").text(unit);
+    
+}
+
+var qty = $(e).parent().parent().parent().find(".product-text-dt").find(".qty-cart").find("div").children("input.qty").val();
+
+
+
+ap-mart
+
+
+<script>
+
+            function wishlist(e)
+            {
+                var user_id = $(e).attr("user_id");
+                var shop_product_id = $(e).attr("shop_product_id");
+                var class_value = $(e).attr("class").trim();
+
+                if (user_id != "0")
+                {
+                    if (class_value == "like-icon" || class_value == "like-icon save-icon")
+                    {
+                        $.ajax({
+                            url: 'AjaxWishlistServlet',
+                            type: "post",
+                            data: {user_id: user_id, shop_product_id: shop_product_id, action: "insert"},
+                            success: function (res) {
+                                $(".wishlist_count").html(res);
+                                if (class_value == "like-icon")
+                                {
+                                    $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon save-icon']").attr("class", "like-icon save-icon liked");
+                                    $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "like-icon liked");
+                                } else
+                                {
+                                    $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon']").attr("class", "like-icon liked");
+                                }
+                            }
+                        });
+                    } else
+                    {
+                        $.ajax({
+                            url: 'AjaxWishlistServlet',
+                            type: "post",
+                            data: {user_id: user_id, shop_product_id: shop_product_id},
+                            success: function (res) {
+                                $(".wishlist_count").html(res);
+                                if (class_value == "like-icon liked")
+                                {
+                                    $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon save-icon liked']").attr("class", "like-icon save-icon");
+                                    $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "like-icon");
+                                } else
+                                {
+                                    $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon liked']").attr("class", "like-icon");
+                                }
+                            }
+                        });
+                    }
+                } else
+                {
+                    location.href = 'sign_in.jsp';
+                }
+            }
+
+
+            function cart(e)
+            {
+                var user_id = $(e).attr("user_id");
+                var shop_product_id = $(e).attr("shop_product_id");
+
+                var qty = $(e).parent().find(".qty").val();
+                if (qty == null)
+                {
+                    qty = $(".qty[action='abc']").val();
+                }
+
+                var class_value = $(e).attr("class").trim();
+
+                if (user_id != "0")
+                {
+                    if (class_value == "cart-icon" || class_value == "cart-icon cart-icon-save")
+                    {
+                        $.ajax({
+                            url: 'AjaxCartServlet',
+                            type: "post",
+                            data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "insert"},
+                            success: function (res) {
+                                $(".cart_count").html(res);
+                                if (class_value == "cart-icon")
+                                {
+                                    $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon cart-icon-save']").attr("class", "cart-icon cart-icon-save clicked");
+                                    $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "cart-icon clicked");
+                                } else
+                                {
+                                    $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon']").attr("class", "cart-icon clicked");
+                                }
+                            }
+                        });
+                    } else
+                    {
+                        $.ajax({
+                            url: 'AjaxCartServlet',
+                            type: "post",
+                            data: {user_id: user_id, shop_product_id: shop_product_id, action: "delete"},
+                            success: function (res) {
+                                $(".cart_count").html(res);
+                                if (class_value == "cart-icon clicked")
+                                {
+                                    $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon cart-icon-save clicked']").attr("class", "cart-icon cart-icon-save");
+                                    $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "cart-icon");
+                                } else
+                                {
+                                    $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon clicked']").attr("class", "cart-icon");
+                                }
+                            }
+                        });
+                    }
+                     window.setTimeout(function () {
+                        $.ajax({
+                            url: 'AjaxCartData.jsp',
+                            type: "post",
+                            data: {user_id: user_id},
+                            success: function (cartData) {
+                                //alert("hiiii2");
+                                $("#cart_delete").remove();
+                                $("#cart_insert").html(cartData);
+                                cart_items();
+                            }
+                        });
+                    }, 500);
+                } else
+                {
+                    location.href = 'sign_in.jsp';
+                }
+            }
+
+            function cartValueUpdate(e, act)
+            {
+                var user_id = $(e).parent().find(".qty").attr("user_id");
+                var shop_product_id = $(e).parent().find(".qty").attr("shop_product_id");
+                var qty = parseInt($(e).parent().find(".qty").val());
+                var max_qty = parseInt($(e).parent().find(".qty").attr("max"));
+
+                if (act == "max" && qty < max_qty)
+                {
+                    qty = qty + 1;
+                } else if (act == "min" && qty > 2)
+                {
+                    qty = qty - 1;
+                }
+
+                var isChange = $(e).parent().parent().find("#change").attr("id");
+            
+                if (user_id != "0" && isChange == 'change')
+                 {
+                    $.ajax({
+                        url: 'AjaxCartServlet',
+                        type: "post",
+                        data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "update"},
+                        success: function (res) {
+                            $(".cart_count").html(res);
+                            $(".qty[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").val(qty);
+                        }
+                    });
+                     
+                 }
+                
+                if (user_id != "0" && $(e).parent().parent().parent().parent().find("span#cart").attr("class").trim() == "cart-icon cart-icon-save clicked")
+                {
+                    $.ajax({
+                        url: 'AjaxCartServlet',
+                        type: "post",
+                        data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "update"},
+                        success: function (res) {
+                            $(".cart_count").html(res);
+                            $(".qty[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").val(qty);
+                        }
+                    });
+                }
+
+
+                if (user_id != "0" && $(e).parent().parent().children("span").attr("class").trim() == "cart-icon clicked")
+                {
+                    $.ajax({
+                        url: 'AjaxCartServlet',
+                        type: "post",
+                        data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "update"},
+                        success: function (res) {
+                            $(".cart_count").html(res);
+                            $(".qty[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").val(qty);
+                        }
+                    });
+                }
+
+
+            }
+
+            $(document).ready(function () {
+            <%List<Shop> list5 = ShopDAO.viewData();
+                String hours_closing;
+                String minutes_closing;
+                String hours_opening;
+                String minutes_opening;
+                for (Shop e1 : list5) {
+                    hours_closing = e1.getClosing_time().split(":")[0];
+                    minutes_closing = e1.getClosing_time().split(":")[1];
+                    hours_opening = e1.getOpening_time().split(":")[0];
+                    minutes_opening = e1.getOpening_time().split(":")[1];
+            %>
+                refreshAt(<%=hours_closing%>, <%=minutes_closing%>, 00);
+                refreshAt(<%=hours_opening%>, <%=minutes_opening%>, 00);
+            <%}%>
+            });
+
+            /*$(document).ready(function () {
+             var user_id = $("input#user_id").val();
+             if (user_id != "0")
+             {
+             $.ajax({
+             url: 'AjaxCartServlet',
+             type: "post",
+             data: {user_id: user_id},
+             success: function (res) {
+             $(".cart_count").html(res);
+             }
+             });
+             }
+             });*/
+            function refreshAt(hours, minutes, seconds) {
+                var now = new Date();
+                var then = new Date();
+                if (now.getHours() > hours ||
+                        (now.getHours() == hours && now.getMinutes() > minutes) ||
+                        now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+                    then.setDate(now.getDate() + 1);
+                }
+                then.setHours(hours);
+                then.setMinutes(minutes);
+                then.setSeconds(seconds);
+                var timeout = (then.getTime() - now.getTime());
+                setTimeout(function () {
+                    location.reload(true);
+                }, timeout);
+            }
+
+            $(document).ready(function () {
+
+                //shop status change
+
+                var status = [];
+            <%  List<Shop> list9 = ShopDAO.viewData();
+                for (Shop e1 : list9) {
+            %>
+                status = status + "<%=e1.getStatus()%>";
+            <%}%>
+                var old_status = status.length;
+                //Shop opening - closing time change
+
+                var old_sum = 0;
+                var hours_o;
+                var minites_o;
+                var hours_c;
+                var minites_c;
+            <%  List<Shop> list10 = ShopDAO.viewData();
+                for (Shop e1 : list10) {
+            %>
+                hours_o = <%=e1.getOpening_time().split(":")[0]%>
+                minites_o = <%=e1.getOpening_time().split(":")[1]%>
+                hours_c = <%=e1.getClosing_time().split(":")[0]%>
+                minites_c = <%=e1.getClosing_time().split(":")[1]%>
+                old_sum = old_sum + hours_o + minites_o + hours_c + minites_c;
+            <%}%>
+
+                //ShopProduct Qunatity change
+
+                var old_quntity = 0;
+            <% List<ShopProduct> list11 = ShopProductDAO.viewAllDataProducts(" ");
+                for (ShopProduct e1 : list11) {
+            %>
+                old_quntity = old_quntity + <%=e1.getQuantity()%>
+            <%}%>
+
+                var intervalId = window.setInterval(function () {
+                    pageReload(old_status, old_sum, old_quntity);
+                }, 1000);
+            });
+
+            function pageReload(old_status, old_sum, old_quntity)
+            {
+                $.ajax({
+                    url: 'AjaxPageReloadServlet',
+                    type: "post",
+                    data: {},
+                    success: function (new_value) {
+                        var new_status = new_value.split(" ")[0];
+                        var new_sum = new_value.split(" ")[1];
+                        var new_quntity = new_value.split(" ")[2];
+                        if ((new_status != old_status) || (new_sum != old_sum) || (new_quntity != old_quntity))
+                        {
+                            location.reload(true);
+                        }
+
+                    }
+                });
+            }
+
+            //page bake that time page refresh
+
+            $(document).ready(function () {
+                if (performance.navigation.type == 2) {
+                    location.reload(true);
+                }
+            });
+            
+            function cart_items()
+            {
+                var total_dis = 0;
+                var total_pri = 0;
+                var total_sav = 0;
+
+                $(".cart_items").each(function () {
+                    var sub_total_dis = 0;
+                    var sub_total_pri = 0;
+
+                    $(this).find(".cart-item").each(function () {
+                        var qty = $(this).find(".cart_qty").val();
+                        var dis_price = $(this).find(".abc1 font").text().replace('₹', '');
+                        var price = $(this).find(".abc1 span").text().replace('₹', '');
+                        //alert(qty+" "+dis_price+" "+price);
+                        var row_total_dis = qty * dis_price;
+                        var row_total_pri = qty * price;
+                        //alert(row_total_dis);
+                        $(this).find(".abc2 font").text("₹" + row_total_dis);
+                        $(this).find(".abc2 span").text("₹" + row_total_pri);
+                        sub_total_dis = sub_total_dis + row_total_dis;
+                        sub_total_pri = sub_total_pri + row_total_pri;
+                    });
+                    total_dis = total_dis + sub_total_dis;
+                    total_pri = total_pri + sub_total_pri;
+                    $(this).find(".abc3 font").text("₹" + sub_total_dis);
+                    $(this).find(".abc3 span").text("₹" + sub_total_pri);
+                });
+                total_sav = total_pri - total_dis;
+                $(".saving-total span").text("₹" + total_sav);
+                $(".abc4 font").text("₹" + total_dis);
+                $(".abc4 span").text("₹" + total_pri);
+            }
+        </script>
+
+
+<script>
+
+    function wishlist(e)
+    {
+        var user_id = $(e).attr("user_id");
+        var shop_product_id = $(e).attr("shop_product_id");
+        var class_value = $(e).attr("class").trim();
+
+        if (user_id != "0")
+        {
+            var isSingle;
+            if (class_value == "like-icon" || class_value == "like-icon save-icon")
+            {
+                $.ajax({
+                    url: 'AjaxWishlistServlet',
+                    type: "post",
+                    data: {user_id: user_id, shop_product_id: shop_product_id, action: "insert"},
+                    success: function (res) {
+                        $(".wishlist_count").html(res);
+                        if (class_value == "like-icon")
+                        {
+                            isSingle = $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon save-icon']").attr("class");
+                            $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon save-icon']").attr("class", "like-icon save-icon liked");
+                            if (isSingle == undefined)
+                            {
+                                $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "like-icon liked");
+                            }
+                        } else
+                        {
+                            $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon']").attr("class", "like-icon liked");
+                        }
+                    }
+                });
+            } else
+            {
+                $.ajax({
+                    url: 'AjaxWishlistServlet',
+                    type: "post",
+                    data: {user_id: user_id, shop_product_id: shop_product_id},
+                    success: function (res) {
+                        $(".wishlist_count").html(res);
+                        if (class_value == "like-icon liked")
+                        {
+                            isSingle = $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon save-icon liked']").attr("class");
+                            $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon save-icon liked']").attr("class", "like-icon save-icon");
+                            if (isSingle == undefined)
+                            {
+                                $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "like-icon");
+                            }
+                        } else
+                        {
+                            $("#wishlist[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='like-icon liked']").attr("class", "like-icon");
+                        }
+                    }
+                });
+            }
+        } else
+        {
+            location.href = 'sign_in.jsp';
+        }
+    }
+
+
+    function cart(e)
+    {
+        var user_id = $(e).attr("user_id");
+        var shop_product_id = $(e).attr("shop_product_id");
+
+        var qty = $(e).parent().find(".qty").val();
+        if (qty == null)
+        {
+            qty = $(".qty[action='abc']").val();
+        }
+
+        var class_value = $(e).attr("class").trim();
+
+        if (user_id != "0")
+        {
+            if (class_value == "cart-icon" || class_value == "cart-icon cart-icon-save")
+            {
+                $.ajax({
+                    url: 'AjaxCartServlet',
+                    type: "post",
+                    data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "insert"},
+                    success: function (res) {
+                        $(".cart_count").html(res);
+                        if (class_value == "cart-icon")
+                        {
+                            $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon cart-icon-save']").attr("class", "cart-icon cart-icon-save clicked");
+                            $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "cart-icon clicked");
+                        } else
+                        {
+                            $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon']").attr("class", "cart-icon clicked");
+                        }
+                    }
+                });
+            } else
+            {
+                $.ajax({
+                    url: 'AjaxCartServlet',
+                    type: "post",
+                    data: {user_id: user_id, shop_product_id: shop_product_id, action: "delete"},
+                    success: function (res) {
+                        $(".cart_count").html(res);
+                        if (class_value == "cart-icon clicked")
+                        {
+                            $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon cart-icon-save clicked']").attr("class", "cart-icon cart-icon-save");
+                            $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").attr("class", "cart-icon");
+                        } else
+                        {
+                            $("#cart[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "'][class='cart-icon clicked']").attr("class", "cart-icon");
+                        }
+                    }
+                });
+            }
+            window.setTimeout(function () {
+                $.ajax({
+                    url: 'AjaxCartData.jsp',
+                    type: "post",
+                    data: {user_id: user_id},
+                    success: function (cartData) {
+                        //alert("hiiii2");
+                        $("#cart_delete").remove();
+                        $("#cart_insert").html(cartData);
+                        cart_items();
+                    }
+                });
+            }, 500);
+        } else
+        {
+            location.href = 'sign_in.jsp';
+        }
+    }
+
+    function cartValueUpdate(e, act)
+    {
+        var user_id = $(e).parent().find(".qty").attr("user_id");
+        var shop_product_id = $(e).parent().find(".qty").attr("shop_product_id");
+        var qty = parseInt($(e).parent().find(".qty").val());
+        var max_qty = parseInt($(e).parent().find(".qty").attr("max"));
+
+        if (act == "max" && qty < max_qty)
+        {
+            qty = qty + 1;
+        } else if (act == "min" && qty > 1)
+        {
+            qty = qty - 1;
+        }
+
+        var isChange = $(e).parent().parent().find("#change").attr("id");
+
+        if (user_id != "0" && isChange == 'change')
+        {
+            $.ajax({
+                url: 'AjaxCartServlet',
+                type: "post",
+                data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "update"},
+                success: function (res) {
+                    $(".cart_count").html(res);
+                    $(".qty[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").val(qty);
+                }
+            });
+
+        }
+
+        if (user_id != "0" && $(e).parent().parent().parent().parent().find("span#cart").attr("class").trim() == "cart-icon cart-icon-save clicked")
+        {
+            $.ajax({
+                url: 'AjaxCartServlet',
+                type: "post",
+                data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "update"},
+                success: function (res) {
+                    $(".cart_count").html(res);
+                    $(".qty[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").val(qty);
+                }
+            });
+        }
+
+
+        if (user_id != "0" && $(e).parent().parent().children("span").attr("class").trim() == "cart-icon clicked")
+        {
+            $.ajax({
+                url: 'AjaxCartServlet',
+                type: "post",
+                data: {user_id: user_id, shop_product_id: shop_product_id, quantity: qty, action: "update"},
+                success: function (res) {
+                    $(".cart_count").html(res);
+                    $(".qty[user_id='" + user_id + "'][shop_product_id='" + shop_product_id + "']").val(qty);
+                }
+            });
+        }
+
+
+    }
+
+    $(document).ready(function () {
+    <%List<Shop> list5 = ShopDAO.viewData();
+        String hours_closing;
+        String minutes_closing;
+        String hours_opening;
+        String minutes_opening;
+        for (Shop e1 : list5) {
+            hours_closing = e1.getClosing_time().split(":")[0];
+            minutes_closing = e1.getClosing_time().split(":")[1];
+            hours_opening = e1.getOpening_time().split(":")[0];
+            minutes_opening = e1.getOpening_time().split(":")[1];
+    %>
+        refreshAt(<%=hours_closing%>, <%=minutes_closing%>, 00);
+        refreshAt(<%=hours_opening%>, <%=minutes_opening%>, 00);
+    <%}%>
+    });
+
+    /*$(document).ready(function () {
+     var user_id = $("input#user_id").val();
+     if (user_id != "0")
+     {
+     $.ajax({
+     url: 'AjaxCartServlet',
+     type: "post",
+     data: {user_id: user_id},
+     success: function (res) {
+     $(".cart_count").html(res);
+     }
+     });
+     }
+     });*/
+    function refreshAt(hours, minutes, seconds) {
+        var now = new Date();
+        var then = new Date();
+        if (now.getHours() > hours ||
+                (now.getHours() == hours && now.getMinutes() > minutes) ||
+                now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+            then.setDate(now.getDate() + 1);
+        }
+        then.setHours(hours);
+        then.setMinutes(minutes);
+        then.setSeconds(seconds);
+        var timeout = (then.getTime() - now.getTime());
+        setTimeout(function () {
+            location.reload(true);
+        }, timeout);
+    }
+
+    $(document).ready(function () {
+
+        //shop status change
+
+        var status = [];
+    <%  List<Shop> list9 = ShopDAO.viewData();
+        for (Shop e1 : list9) {
+    %>
+        status = status + "<%=e1.getStatus()%>";
+    <%}%>
+        var old_status = status.length;
+        //Shop opening - closing time change
+
+        var old_sum = 0;
+        var hours_o;
+        var minites_o;
+        var hours_c;
+        var minites_c;
+    <%  List<Shop> list10 = ShopDAO.viewData();
+        for (Shop e1 : list10) {
+    %>
+        hours_o = <%=e1.getOpening_time().split(":")[0]%>
+        minites_o = <%=e1.getOpening_time().split(":")[1]%>
+        hours_c = <%=e1.getClosing_time().split(":")[0]%>
+        minites_c = <%=e1.getClosing_time().split(":")[1]%>
+        old_sum = old_sum + hours_o + minites_o + hours_c + minites_c;
+    <%}%>
+
+        //ShopProduct Qunatity change
+
+        var old_quntity = 0;
+    <% List<ShopProduct> list11 = ShopProductDAO.viewAllDataProducts(" ");
+        for (ShopProduct e1 : list11) {
+    %>
+        old_quntity = old_quntity + <%=e1.getQuantity()%>
+    <%}%>
+
+        var intervalId = window.setInterval(function () {
+            pageReload(old_status, old_sum, old_quntity);
+        }, 1000);
+    });
+
+    function pageReload(old_status, old_sum, old_quntity)
+    {
+        $.ajax({
+            url: 'AjaxPageReloadServlet',
+            type: "post",
+            data: {},
+            success: function (new_value) {
+                var new_status = new_value.split(" ")[0];
+                var new_sum = new_value.split(" ")[1];
+                var new_quntity = new_value.split(" ")[2];
+                if ((new_status != old_status) || (new_sum != old_sum) || (new_quntity != old_quntity))
+                {
+                    location.reload(true);
+                }
+
+            }
+        });
+    }
+
+    //page bake that time page refresh
+
+    $(document).ready(function () {
+        if (performance.navigation.type == 2) {
+            location.reload(true);
+        }
+    });
+
+    function cart_items()
+    {
+        var total_dis = 0;
+        var total_pri = 0;
+        var total_sav = 0;
+
+        $(".cart_items").each(function () {
+            var sub_total_dis = 0;
+            var sub_total_pri = 0;
+
+            $(this).find(".cart-item").each(function () {
+                var qty = $(this).find(".cart_qty").val();
+                var dis_price = $(this).find(".abc1 font").text().replace('₹', '');
+                var price = $(this).find(".abc1 span").text().replace('₹', '');
+                //alert(qty+" "+dis_price+" "+price);
+                var row_total_dis = qty * dis_price;
+                var row_total_pri = qty * price;
+                //alert(row_total_dis);
+                $(this).find(".abc2 font").text("₹" + row_total_dis);
+                $(this).find(".abc2 span").text("₹" + row_total_pri);
+                sub_total_dis = sub_total_dis + row_total_dis;
+                sub_total_pri = sub_total_pri + row_total_pri;
+            });
+            total_dis = total_dis + sub_total_dis;
+            total_pri = total_pri + sub_total_pri;
+            $(this).find(".abc3 font").text("₹" + sub_total_dis);
+            $(this).find(".abc3 span").text("₹" + sub_total_pri);
+        });
+        total_sav = total_pri - total_dis;
+        $(".saving-total span").text("₹" + total_sav);
+        $(".abc4 font").text("₹" + total_dis);
+        $(".abc4 span").text("₹" + total_pri);
+    }
+</script>
+
+
+String user = request.getParameter("user");
+
+if (user.equals("admin")) {
+    response.sendRedirect("./ap-admin/category.jsp");
+} else if (user.equals("shop_owner")) {
+    response.sendRedirect("./ap-shopowner/category.jsp");
+} else {
+    response.sendRedirect("./ap-serviser/category.jsp");
+}

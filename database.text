@@ -1,0 +1,106 @@
+[note :- type means admin,shop owner,servicer,customer]
+
+user
+	user_id 						=> Primary Key,AI
+	full_name
+	email	
+	phone
+	password
+	image
+	address
+	type    
+
+
+categories
+	categories_id 					=> Primary Key,AI
+	name
+	image
+
+
+product
+	product_id 						=> Primary Key,AI
+	category_id  					=> Foreign key
+	name
+	description
+	image
+	more_images
+
+
+[ note :- enter shope owner detail first after enter shop detail ]
+
+shop
+	shop_id 						=> Primary Key,AI
+	shop_owner_id					=> Foreign Key
+	name
+	email
+	phone
+	password
+	location
+	opening_time
+	closing_time
+	address
+	image
+
+
+shop_product
+	shop_product_id 				=> Primary Key,AI
+	shop_id 						=> Foreign key
+	product_id						=> Foreign Key
+	mrp
+	discount_mrp
+	net_weight
+	unit
+	quantity
+	status
+
+contact_us
+	contact_us_id 					=> Primary Key,AI
+	full_name
+	email
+	subject
+	message 
+
+
+wishlist
+	wishlist_id						=> Primary Key,AI
+	user_id 		(customer)
+	shop_product_id					=> Foreign key
+
+cart
+	cart_id							=> Primary Key,AI
+	user_id 		(customer)
+	shop_product_id					=> Foreign key
+
+delivery_address
+	delivery_address_id 			=> Primary Key,AI
+	User_id  		(customer)		
+	house_address
+	socity_address
+	pincode
+	locality
+
+delivery_detail
+	delivery_detail_id 				=> Primary Key,AI
+	custmore_name
+	email
+	phone
+	alt_phone
+	delivery_address_id 			=> Foreign key
+	delivery_time
+	paymentmethod
+
+order_detail
+	order_detail_id					=> Primary Key,AI
+	order_id
+	shop_id
+	user_id
+	shop_product_id					=> Foreign key
+	quantity
+	
+
+order
+	order_id 						=> Foreign key
+	shop_id 						=> Foreign key
+	delivery_detail_id				=> Foreign key
+	servicer
+	status
